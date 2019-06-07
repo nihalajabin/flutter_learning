@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 //import 'package:dio/dio.dart';
 //import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter/services.dart';
 
 void main() => runApp(new MyApp());
-class Post{
   String password;
   String email;
   String name;
@@ -15,52 +15,15 @@ class Post{
   String buildnumber;
   String landmark;
   String roomno;
-  Post({this.password,this.email,this.name,this.mobilenumber,this.buildingname,this.buildnumber,this.landmark,this.roomno});
-  factory Post.fromJson(Map<String, dynamic> json) {
-    return Post(
-        name: json['username'],
-        password: json['passwordString'],
-        mobilenumber: json['mobile'],
-      email: json['email'],
-        buildingname: json['buildingName'],
-      buildnumber: json['buildingNo'],
-      roomno: json['roomno'],
-      landmark: json['landmark']
-
-    );
-  }
-  Map toMap() {
-    var map = new Map<String, dynamic>();
-    map["passwordString"] = password;
-    map["email"] = email;
-    map["username"] = name;
-    map["mobile"]=mobilenumber;
-    map["buildingName"]=buildingname;
-    map["buildingNo"]=buildnumber;
-    map["landmark"]=landmark;
-    map["roomno"]=roomno;
 
 
-    return map;
-  }
-}
-Future<Post> createPost(String url, {Map body}) async {
-  return http.post(url, body: body).then((http.Response response) {
-    final int statusCode = response.statusCode;
-
-    if (statusCode < 200 || statusCode > 400 || json == null) {
-      throw new Exception("Error while fetching data");
-    }
-    return Post.fromJson(json.decode(response.body));
-  });
-}
-Post posts;
+String url = "https://api.modernstores.in:8082/api/1|1|NER-1/public/register";
 
 class MyApp extends StatelessWidget {
-  final Future<Post> post;
 
-  MyApp({Key key, this.post}) : super(key: key);
-  static final CREATE_POST_URL = "https://api.modernstores.in:8082/api/1|1|NER-1/public/register";
+
+
+  //static final url = "https://api.modernstores.in:8082/api/1|1|NER-1/public/register";
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -114,7 +77,7 @@ class formPageState extends State<formPage> {
 
                     validator: (val) =>
                         !val.contains('@') ? 'Invalid Email' :null,
-                    onSaved: (val) => posts.email = val,
+                    onSaved: (val) => email = val,
 
                   ),
                   new Padding(
@@ -122,7 +85,7 @@ class formPageState extends State<formPage> {
                   new TextFormField(
                     decoration: new InputDecoration(labelText: "Password"),
                     validator: (val) => val.length < 6 ? 'Week Password' : null,
-                    onSaved: (val) => posts.password= val,
+                    onSaved: (val) => password= val,
                     obscureText: true,
                   ),
                   new Padding(
@@ -131,7 +94,7 @@ class formPageState extends State<formPage> {
                     decoration: new InputDecoration(labelText: "Name"),
                     validator: (val) =>
                         val.length == 0 ? 'Name is Reqiured' : null,
-                    onSaved: (val) => posts.name = val,
+                    onSaved: (val) => name = val,
                   ),
                   new Padding(
                       padding: const EdgeInsets.fromLTRB(0.0, 20.0, 0.0, 0.0)),
@@ -139,7 +102,7 @@ class formPageState extends State<formPage> {
                     decoration: new InputDecoration(labelText: "Mobile No"),
                     keyboardType: TextInputType.phone,
                     //validator:(val)=>val.length<10?'Mobile no Incorrect':null ,
-                    onSaved: (val)=>posts.mobilenumber=val,
+                    onSaved: (val)=>mobilenumber=val,
                   ),
                   new Padding(
                       padding: const EdgeInsets.fromLTRB(0.0, 20.0, 0.0, 0.0)),
@@ -147,7 +110,7 @@ class formPageState extends State<formPage> {
                     decoration: new InputDecoration(labelText: "Building Name"),
                     validator: (val) =>
                         val.length == 0 ? 'Building Name is Reqiured' : null,
-                    onSaved: (val) => posts.buildingname = val,
+                    onSaved: (val) => buildingname = val,
                   ),
                   new Padding(
                       padding: const EdgeInsets.fromLTRB(0.0, 20.0, 0.0, 0.0)),
@@ -155,7 +118,7 @@ class formPageState extends State<formPage> {
                     decoration: new InputDecoration(labelText: "Building No"),
                     validator: (val) =>
                         val.length == 0 ? 'Building Number is Reqiured' : null,
-                    onSaved: (val) => posts.buildnumber = val,
+                    onSaved: (val) => buildnumber = val,
                   ),
                   new Padding(
                       padding: const EdgeInsets.fromLTRB(0.0, 20.0, 0.0, 0.0)),
@@ -163,7 +126,7 @@ class formPageState extends State<formPage> {
                     decoration: new InputDecoration(labelText: "LandMark"),
                     validator: (val) =>
                         val.length == 0 ? 'Please Enter a Landmark' : null,
-                    onSaved: (val) => posts.landmark = val,
+                    onSaved: (val) => landmark = val,
                   ),
                   new Padding(
                       padding: const EdgeInsets.fromLTRB(0.0, 20.0, 0.0, 0.0)),
@@ -189,14 +152,20 @@ class formPageState extends State<formPage> {
     if (form.validate()) {
       form.save();
       //Post p= new createPost(CREATE_POST_URL,body:post.toMap());
-      print(posts.name);
-     // performLogin();
+      //print(posts.name);
+      performLogin();
     }
   }
 
 
+   performLogin() async {
+    var response=await http.post(url,body:{'username':name,'passwordString':password,'mobile':mobilenumber,'email':email,'buildingName':buildingname,'buildingNo':buildnumber,'roomNo':roomno,'landmark':landmark});
+  print('Response status:${response.statusCode}');
+  }
 
 
         //"https://api.modernstores.in:8082/api/1|1|NER-1/public/register";
 
 }
+
+
