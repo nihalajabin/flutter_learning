@@ -1,12 +1,14 @@
-
 import 'dart:async';
+import 'dart:io';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
 import 'package:http/http.dart' as http;
 import 'package:flutter/services.dart';
 
-void main() => runApp(new MyApp());
+void main()  => runApp(new MaterialApp(
+      home: new formPage(),
+    ));
 String password;
 String email;
 String name;
@@ -16,10 +18,9 @@ String buildnumber;
 String landmark;
 String roomno;
 
-String url = "https://api.modernstores.in:8082/api/1|1|NER-1/public/register";
+var url = "https://api.modernstores.in:8082/api/1|1|NER-1/public/register";
 
 class MyApp extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -95,7 +96,7 @@ class formPageState extends State<formPage> {
                     decoration: new InputDecoration(labelText: "Mobile No"),
                     //keyboardType: TextInputType.phone,
                     validator: (val) =>
-                    val.length == 0 ? 'mobilenumber is Reqiured' : null,
+                        val.length == 0 ? 'mobilenumber is Reqiured' : null,
 
                     onSaved: (val) => mobilenumber = val,
                   ),
@@ -137,7 +138,6 @@ class formPageState extends State<formPage> {
                     child: new Text("Register"),
                     onPressed: _submit,
                     color: Colors.blue,
-
                   )
                 ],
               ))),
@@ -161,17 +161,18 @@ class formPageState extends State<formPage> {
         'Accept': 'application/json',
         'content-type': 'application/json',
       },
-      body: { jsonEncode({
-        'username':name,
-        'passwordString': password,
-        'mobile': mobilenumber,
-        'email': email,
-        'buildingName': buildingname,
-        'buildingNo': buildnumber,
-        'roomNo': roomno,
-        'landmark': landmark,
-      })},
-
+      body: {
+        jsonEncode({
+          'username': name,
+          'passwordString': password,
+          'mobile': mobilenumber,
+          'email': email,
+          'buildingName': buildingname,
+          'buildingNo': buildnumber,
+          'roomNo': roomno,
+          'landmark': landmark,
+        })
+      },
     );
     print('Response status:${response.statusCode}');
     print('Response body:${response.body}');
