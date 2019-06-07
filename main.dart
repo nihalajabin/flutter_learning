@@ -1,29 +1,25 @@
+
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
-//import 'package:dio/dio.dart';
-//import 'package:flutter/foundation.dart';
+
 import 'package:http/http.dart' as http;
 import 'package:flutter/services.dart';
 
 void main() => runApp(new MyApp());
-  String password;
-  String email;
-  String name;
-  String mobilenumber;
-  String buildingname;
-  String buildnumber;
-  String landmark;
-  String roomno;
-
+String password;
+String email;
+String name;
+String mobilenumber;
+String buildingname;
+String buildnumber;
+String landmark;
+String roomno;
 
 String url = "https://api.modernstores.in:8082/api/1|1|NER-1/public/register";
 
 class MyApp extends StatelessWidget {
 
-
-
-  //static final url = "https://api.modernstores.in:8082/api/1|1|NER-1/public/register";
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -44,7 +40,6 @@ class formPageState extends State<formPage> {
   final scaffoldKey = new GlobalKey<ScaffoldState>();
   final formKey = new GlobalKey<FormState>();
   final FocusNode focusNode = new FocusNode();
-
 
   @override
   void initState() {
@@ -74,18 +69,16 @@ class formPageState extends State<formPage> {
                 children: <Widget>[
                   new TextFormField(
                     decoration: new InputDecoration(labelText: "Email"),
-
                     validator: (val) =>
-                        !val.contains('@') ? 'Invalid Email' :null,
+                        !val.contains('@') ? 'Invalid Email' : null,
                     onSaved: (val) => email = val,
-
                   ),
                   new Padding(
                       padding: const EdgeInsets.fromLTRB(0.0, 20.0, 0.0, 0.0)),
                   new TextFormField(
                     decoration: new InputDecoration(labelText: "Password"),
                     validator: (val) => val.length < 6 ? 'Week Password' : null,
-                    onSaved: (val) => password= val,
+                    onSaved: (val) => password = val,
                     obscureText: true,
                   ),
                   new Padding(
@@ -100,9 +93,11 @@ class formPageState extends State<formPage> {
                       padding: const EdgeInsets.fromLTRB(0.0, 20.0, 0.0, 0.0)),
                   new TextFormField(
                     decoration: new InputDecoration(labelText: "Mobile No"),
-                    keyboardType: TextInputType.phone,
-                    //validator:(val)=>val.length<10?'Mobile no Incorrect':null ,
-                    onSaved: (val)=>mobilenumber=val,
+                    //keyboardType: TextInputType.phone,
+                    validator: (val) =>
+                    val.length == 0 ? 'mobilenumber is Reqiured' : null,
+
+                    onSaved: (val) => mobilenumber = val,
                   ),
                   new Padding(
                       padding: const EdgeInsets.fromLTRB(0.0, 20.0, 0.0, 0.0)),
@@ -123,6 +118,14 @@ class formPageState extends State<formPage> {
                   new Padding(
                       padding: const EdgeInsets.fromLTRB(0.0, 20.0, 0.0, 0.0)),
                   new TextFormField(
+                    decoration: new InputDecoration(labelText: "Room No"),
+                    validator: (val) =>
+                        val.length == 0 ? 'Room Number is Reqiured' : null,
+                    onSaved: (val) => roomno = val,
+                  ),
+                  new Padding(
+                      padding: const EdgeInsets.fromLTRB(0.0, 20.0, 0.0, 0.0)),
+                  new TextFormField(
                     decoration: new InputDecoration(labelText: "LandMark"),
                     validator: (val) =>
                         val.length == 0 ? 'Please Enter a Landmark' : null,
@@ -134,12 +137,7 @@ class formPageState extends State<formPage> {
                     child: new Text("Register"),
                     onPressed: _submit,
                     color: Colors.blue,
-                      //onPressed: () async {
-                       // Post newPost = new Post(
-                           // userId: "123", id: 0, title: titleControler.text, body: bodyControler.text);
-                        //Post p = await createPost(CREATE_POST_URL,
-                           // body: newPost.toMap());
-                        //print(p.title);
+
                   )
                 ],
               ))),
@@ -151,21 +149,34 @@ class formPageState extends State<formPage> {
 
     if (form.validate()) {
       form.save();
-      //Post p= new createPost(CREATE_POST_URL,body:post.toMap());
-      //print(posts.name);
+
       performLogin();
     }
   }
 
+  performLogin() async {
+    var response = await http.post(
+      Uri.encodeFull(url),
+      headers: {
+        'Accept': 'application/json',
+        'content-type': 'application/json',
+      },
+      body: { jsonEncode({
+        'username':name,
+        'passwordString': password,
+        'mobile': mobilenumber,
+        'email': email,
+        'buildingName': buildingname,
+        'buildingNo': buildnumber,
+        'roomNo': roomno,
+        'landmark': landmark,
+      })},
 
-   performLogin() async {
-    var response=await http.post(url,body:{'username':name,'passwordString':password,'mobile':mobilenumber,'email':email,'buildingName':buildingname,'buildingNo':buildnumber,'roomNo':roomno,'landmark':landmark});
-  print('Response status:${response.statusCode}');
+    );
+    print('Response status:${response.statusCode}');
+    print('Response body:${response.body}');
   }
 
-
-        //"https://api.modernstores.in:8082/api/1|1|NER-1/public/register";
+  //"https://api.modernstores.in:8082/api/1|1|NER-1/public/register";
 
 }
-
-
