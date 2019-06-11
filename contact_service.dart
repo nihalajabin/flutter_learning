@@ -3,14 +3,16 @@ import 'contact.dart';
 import 'dart:async';
 import 'dart:convert';
 //import 'package:intl/intl.dart';
+
 class Contactservice {
   static const url =
       "https://api.modernstores.in:8082/api/1|1|NER-1/public/register";
   static final _headers = {'Content-Type': 'application/json'};
   Future<Contact> createContact(Contact contact) async {
     try {
-      String json = _tojson(contact);
-      final response = await http.post(url, headers: _headers, body: json);
+      Map map = _tojson(contact);
+      final response = await http.post(url, headers: _headers, body:jsonEncode(map) );
+      print(response.body);
       var c = _fromJson(response.body);
       return c;
 
@@ -36,9 +38,9 @@ class Contactservice {
     return contact;
   }
 
-  String_tojson(Contact contact) {
+  Map _tojson(Contact contact) {
     var mapdata = new Map();
-    mapdata["username"]=contact.name;
+    mapdata["username"] = contact.name;
     mapdata["passwordString"]=contact.password;
     mapdata["mobile"]=contact.mobilenumber;
     mapdata["email"] = contact.email;
@@ -46,8 +48,10 @@ class Contactservice {
     mapdata["buildingNo"]=contact.buildnumber;
     mapdata["roomNo"]=contact.roomno;
     mapdata["landmark"]=contact.landmark;
-    String jsonContact = jsonEncode(mapdata);
-    return jsonContact;
 
+    //jsonEncode(mapdata);
+    return mapdata;
+//    return jsonContact;
+//
   }
 }
