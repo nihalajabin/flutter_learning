@@ -11,6 +11,7 @@ import 'contact_service.dart';
 void main()  => runApp(new MaterialApp(
       home: new formPage(),
     ));
+
 Contact contact=new Contact();
 var url = "https://api.modernstores.in:8082/api/1|1|NER-1/public/register";
 
@@ -90,7 +91,7 @@ class formPageState extends State<formPage> {
                     decoration: new InputDecoration(labelText: "Mobile No"),
                     //keyboardType: TextInputType.phone,
                     validator: (val) =>
-                        val.length == 0 ? 'mobilenumber is Reqiured' : null,
+                        val.length < 10 ? 'mobilenumber is Incorrect' : null,
 
                     onSaved: (val) => contact.mobilenumber = val,
                   ),
@@ -141,15 +142,17 @@ class formPageState extends State<formPage> {
   void _submit() {
     final FormState form = formKey.currentState;
 
-   // if (!form.validate()) {
+    if(!form.validate()) {
 
-     // showMessage("Form is not valid");
-    //}
-   // else{
-    //  form.save();
+     showMessage("Form is not valid");
+    }
+    else{
+     form.save();
+    print("form save called");
+
       var contactsrvice=new Contactservice();
       contactsrvice.createContact(contact).then((value)=>showMessage('Success'));
-   // }
+    }
   }
   void showMessage(String show,[MaterialColor=Colors.black45]) {
    scaffoldKey.currentState.showSnackBar(
