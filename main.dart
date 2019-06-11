@@ -5,19 +5,13 @@ import 'package:flutter/material.dart';
 
 import 'package:http/http.dart' as http;
 import 'package:flutter/services.dart';
+import 'contact.dart';
+import 'contact_service.dart';
 
 void main()  => runApp(new MaterialApp(
       home: new formPage(),
     ));
-String password;
-String email;
-String name;
-String mobilenumber;
-String buildingname;
-String buildnumber;
-String landmark;
-String roomno;
-
+Contact contact=new Contact();
 var url = "https://api.modernstores.in:8082/api/1|1|NER-1/public/register";
 
 class MyApp extends StatelessWidget {
@@ -72,14 +66,14 @@ class formPageState extends State<formPage> {
                     decoration: new InputDecoration(labelText: "Email"),
                     validator: (val) =>
                         !val.contains('@') ? 'Invalid Email' : null,
-                    onSaved: (val) => email = val,
+                    onSaved: (val) => contact.email = val,
                   ),
                   new Padding(
                       padding: const EdgeInsets.fromLTRB(0.0, 20.0, 0.0, 0.0)),
                   new TextFormField(
                     decoration: new InputDecoration(labelText: "Password"),
                     validator: (val) => val.length < 6 ? 'Week Password' : null,
-                    onSaved: (val) => password = val,
+                    onSaved: (val) => contact.password = val,
                     obscureText: true,
                   ),
                   new Padding(
@@ -88,7 +82,7 @@ class formPageState extends State<formPage> {
                     decoration: new InputDecoration(labelText: "Name"),
                     validator: (val) =>
                         val.length == 0 ? 'Name is Reqiured' : null,
-                    onSaved: (val) => name = val,
+                    onSaved: (val) => contact.name = val,
                   ),
                   new Padding(
                       padding: const EdgeInsets.fromLTRB(0.0, 20.0, 0.0, 0.0)),
@@ -98,7 +92,7 @@ class formPageState extends State<formPage> {
                     validator: (val) =>
                         val.length == 0 ? 'mobilenumber is Reqiured' : null,
 
-                    onSaved: (val) => mobilenumber = val,
+                    onSaved: (val) => contact.mobilenumber = val,
                   ),
                   new Padding(
                       padding: const EdgeInsets.fromLTRB(0.0, 20.0, 0.0, 0.0)),
@@ -106,7 +100,7 @@ class formPageState extends State<formPage> {
                     decoration: new InputDecoration(labelText: "Building Name"),
                     validator: (val) =>
                         val.length == 0 ? 'Building Name is Reqiured' : null,
-                    onSaved: (val) => buildingname = val,
+                    onSaved: (val) => contact.buildingname = val,
                   ),
                   new Padding(
                       padding: const EdgeInsets.fromLTRB(0.0, 20.0, 0.0, 0.0)),
@@ -114,7 +108,7 @@ class formPageState extends State<formPage> {
                     decoration: new InputDecoration(labelText: "Building No"),
                     validator: (val) =>
                         val.length == 0 ? 'Building Number is Reqiured' : null,
-                    onSaved: (val) => buildnumber = val,
+                    onSaved: (val) => contact.buildnumber = val,
                   ),
                   new Padding(
                       padding: const EdgeInsets.fromLTRB(0.0, 20.0, 0.0, 0.0)),
@@ -122,7 +116,7 @@ class formPageState extends State<formPage> {
                     decoration: new InputDecoration(labelText: "Room No"),
                     validator: (val) =>
                         val.length == 0 ? 'Room Number is Reqiured' : null,
-                    onSaved: (val) => roomno = val,
+                    onSaved: (val) => contact.roomno = val,
                   ),
                   new Padding(
                       padding: const EdgeInsets.fromLTRB(0.0, 20.0, 0.0, 0.0)),
@@ -130,7 +124,7 @@ class formPageState extends State<formPage> {
                     decoration: new InputDecoration(labelText: "LandMark"),
                     validator: (val) =>
                         val.length == 0 ? 'Please Enter a Landmark' : null,
-                    onSaved: (val) => landmark = val,
+                    onSaved: (val) => contact.landmark = val,
                   ),
                   new Padding(
                       padding: const EdgeInsets.fromLTRB(0.0, 20.0, 0.0, 0.0)),
@@ -145,39 +139,23 @@ class formPageState extends State<formPage> {
   }
 
   void _submit() {
-    final form = formKey.currentState;
+    final FormState form = formKey.currentState;
 
-    if (form.validate()) {
-      form.save();
+   // if (!form.validate()) {
 
-      performLogin();
-    }
+     // showMessage("Form is not valid");
+    //}
+   // else{
+    //  form.save();
+      var contactsrvice=new Contactservice();
+      contactsrvice.createContact(contact).then((value)=>showMessage('Success'));
+   // }
+  }
+  void showMessage(String show,[MaterialColor=Colors.black45]) {
+   scaffoldKey.currentState.showSnackBar(
+       new SnackBar(content: new Text(show)));
   }
 
-  performLogin() async {
-    var response = await http.post(
-      Uri.encodeFull(url),
-      headers: {
-        'Accept': 'application/json',
-        'content-type': 'application/json',
-      },
-      body: {
-        jsonEncode({
-          'username': name,
-          'passwordString': password,
-          'mobile': mobilenumber,
-          'email': email,
-          'buildingName': buildingname,
-          'buildingNo': buildnumber,
-          'roomNo': roomno,
-          'landmark': landmark,
-        })
-      },
-    );
-    print('Response status:${response.statusCode}');
-    print('Response body:${response.body}');
-  }
-
-  //"https://api.modernstores.in:8082/api/1|1|NER-1/public/register";
 
 }
+
